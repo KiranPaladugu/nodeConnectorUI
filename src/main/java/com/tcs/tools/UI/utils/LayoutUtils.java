@@ -1,8 +1,11 @@
-package com.tcs.tool.UI;
+package com.tcs.tools.UI.utils;
 
 import java.awt.*;
 
 import javax.swing.*;
+
+import com.tcs.tool.UI.ButtonControlPanel;
+import com.tcs.tool.UI.ControlPanel;
 
 public class LayoutUtils {
 
