@@ -9,7 +9,7 @@
 		<dependency>
 			<groupId>com.tools</groupId>
 			<artifactId>application-common</artifactId>
-			<version>1.0.2-SNAPSHOT</version>
+			<version>1.0.3-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 
