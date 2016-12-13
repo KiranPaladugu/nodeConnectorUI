@@ -63,10 +63,10 @@ public class ConnectionManger implements Subscriber, ConnectionListener {
 			final Object data = event.getData();
 			if (data instanceof ConnectionData) {
 				final ConnectionData conData = (ConnectionData) data;
-				connection = new SSHConnection();
-				connection.addConnectionListener(this);
-				connection.setEndOfSatement(endOfCommand);
 				try {
+					connection = new SSHConnection();
+					connection.addConnectionListener(this);
+					connection.setEndOfSatement(endOfCommand);
 					notifyOnConnecitonLost = true;
 					connection.initialize(conData);
 					Application.getSubscriptionManager().notifySubscriber(UIConstants.CONNECTING, connection);
