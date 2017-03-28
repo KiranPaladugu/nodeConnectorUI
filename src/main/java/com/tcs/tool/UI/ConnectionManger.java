@@ -20,14 +20,15 @@ import com.tcs.tools.UI.utils.UIConstants;
 
 public class ConnectionManger implements Subscriber, ConnectionListener {
 	private SSHConnection connection;
+	// private final String endOfCommand = "]]>]]>";
 	private final String endOfCommand = "]]>]]>";
 	private boolean notifyOnConnecitonLost = false;
 	private boolean isConnected;
 
 	public ConnectionManger() {
 		Application.getApplicationContext().put("endOfCommand", endOfCommand);
-		Application.getSubscriptionManager().subscribe(this, UIConstants.DO_CONNECTION, UIConstants.DO_DISCONNECTION, UIConstants.SEND_REQUEST,
-				Application.EXIT);
+		Application.getSubscriptionManager().subscribe(this, UIConstants.DO_CONNECTION, UIConstants.DO_DISCONNECTION,
+				UIConstants.SEND_REQUEST, UIConstants.FORCE_DISCONNECT, Application.EXIT);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -42,20 +43,30 @@ public class ConnectionManger implements Subscriber, ConnectionListener {
 			}
 			if (obj != null && obj instanceof Message<?>) {
 				final Message<String> message = (Message<String>) obj;
-				if (message.getMessage().lastIndexOf(connection.getEndOfSatement()) == -1) {
-					System.out.println("Appending end of statement");
-					message.setMessage(message.getMessage() + '\n' + connection.getEndOfSatement());
-				}
+				/*
+				 * if
+				 * (message.getMessage().lastIndexOf(connection.getEndOfSatement
+				 * ()) == -1) {
+				 * System.out.println("Appending end of statement");
+				 * message.setMessage(message.getMessage() + '\n' +
+				 * connection.getEndOfSatement()); }
+				 */
 				System.out.println("Sending request:");
 				connection.write(message.getMessage() + '\n');
 				System.out.println("sent request:");
+				if(!message.getMessage().endsWith(endOfCommand)){
+				    message.setMessage(message.getMessage()+"\n"+endOfCommand);
+				}
 				message.setMessageType(Message.REQUEST);
 				Application.getSubscriptionManager().notifySubscriber(UIConstants.REQUEST, connection, message);
 				/*
-				 * if (message.isReplyExpected()) { System.out.println("Waiting for reply"); Message<String> respnse = new
-				 * Response<String>(connection.read()); respnse.setEndOfMessageDelim(endOfCommand); System.out.println(
-				 * "got reply.."); Application.getSubscriptionManager().notifySubscriber(UIConstants.RESPONSE, connection,
-				 * respnse); }
+				 * if (message.isReplyExpected()) {
+				 * System.out.println("Waiting for reply"); Message<String>
+				 * respnse = new Response<String>(connection.read());
+				 * respnse.setEndOfMessageDelim(endOfCommand);
+				 * System.out.println( "got reply..");
+				 * Application.getSubscriptionManager().notifySubscriber(
+				 * UIConstants.RESPONSE, connection, respnse); }
 				 */
 			}
 			break;
@@ -73,14 +84,17 @@ public class ConnectionManger implements Subscriber, ConnectionListener {
 					connection.connect();
 					if (connection.isConnected()) {
 						isConnected = true;
-						Application.getSubscriptionManager().notifySubscriber(UIConstants.CONNECTION_SUCCESS, connection);
+						Application.getSubscriptionManager().notifySubscriber(UIConstants.CONNECTION_SUCCESS,
+								connection);
 					} else {
 						Application.getSubscriptionManager().notifySubscriber(UIConstants.DICONNECTED, connection);
 					}
 					new ResponseListener(connection);
 					/*
-					 * Message<String> message = new Response<String>(connection.read());
-					 * Application.getSubscriptionManager().notifySubscriber(UIConstants.RESPONSE, connection, message);
+					 * Message<String> message = new
+					 * Response<String>(connection.read());
+					 * Application.getSubscriptionManager().notifySubscriber(
+					 * UIConstants.RESPONSE, connection, message);
 					 */
 				} catch (final Exception e) {
 					// e.printStackTrace();
@@ -109,7 +123,8 @@ public class ConnectionManger implements Subscriber, ConnectionListener {
 				connection.disConnect();
 				isConnected = false;
 				connection = null;
-				// Application.getSubscriptionManager().notifySubscriber(UIConstants.DICONNECTED, connection);
+				// Application.getSubscriptionManager().notifySubscriber(UIConstants.DICONNECTED,
+				// connection);
 			}
 			break;
 		case UIConstants.PRE_DISCONNECT:
@@ -125,7 +140,8 @@ public class ConnectionManger implements Subscriber, ConnectionListener {
 
 		} else if (event.getEventType() == ConnectionEvent.DISCONNECTED) {
 			Application.getSubscriptionManager().notifySubscriber(UIConstants.DICONNECTED, connection);
-			if (notifyOnConnecitonLost) JOptionPane.showMessageDialog(null, "Connection lost!", "Connection Lost", JOptionPane.WARNING_MESSAGE);
+			if (notifyOnConnecitonLost)
+				JOptionPane.showMessageDialog(null, "Connection lost!", "Connection Lost", JOptionPane.WARNING_MESSAGE);
 		}
 	}
 
@@ -163,7 +179,8 @@ public class ConnectionManger implements Subscriber, ConnectionListener {
 		/*
 		 * (non-Javadoc)
 		 *
-		 * @see com.tcs.application.Subscriber#onSubscriptionEvent(com.tcs.application.SubscriptionEvent)
+		 * @see com.tcs.application.Subscriber#onSubscriptionEvent(com.tcs.
+		 * application.SubscriptionEvent)
 		 */
 		@Override
 		public void onSubscriptionEvent(final SubscriptionEvent event) {

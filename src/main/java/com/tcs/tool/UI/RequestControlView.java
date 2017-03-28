@@ -142,11 +142,12 @@ public class RequestControlView extends ControlPanel implements Subscriber {
 			}
 			connectionStatus.setIcon(ResourceLocator.getImageIcon("On.png"));
 			connectionStatus.setToolTipText("Online");
-			sendOnConnectMessages();
+//			sendOnConnectMessages();
 			Application.getSubscriptionManager().notifySubscriber(txt_Reset);
 			break;
 		case UIConstants.PRE_DISCONNECT:
-			sendPreDisConnectMessages();
+//			sendPreDisConnectMessages();
+			 Application.getSubscriptionManager().notifySubscriber(UIConstants.FORCE_DISCONNECT);
 			break;
 		case UIConstants.DICONNECTED:
 			if (animator != null) {

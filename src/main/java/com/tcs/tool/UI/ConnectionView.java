@@ -38,10 +38,10 @@ public class ConnectionView extends ControlPanel implements Subscriber {
 	private boolean updateHosts, updatePorts, updateSubsystems, updateUsernames;
 
 	private void init() {
-		hosts.add("10.170.115.66");
-		ports.add("830");
-		usernames.add("test");
-		subsystems.addAll(Arrays.asList(new String[] { "netconf-ecim", "netconf-yang" }));
+		hosts.add("localhost");
+		ports.add("2022");
+		usernames.add("admin");
+		subsystems.addAll(Arrays.asList(new String[] { "","netconf-ecim", "netconf-yang" }));
 		try {
 			final ConfigurationManager confMan = Application.getConfigurationManager();
 			updateList(hosts, ConfigurationManager.linesAsList(confMan.getConfigurationAsString("ConnectorUI_hosts.conf")));
